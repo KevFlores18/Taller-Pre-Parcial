@@ -1,0 +1,96 @@
+CREATE DATABASE parcial_sis_fact;
+USE parcial_sis_fact;
+
+CREATE TABLE CUSTOMER (
+    CUS_CODE INT PRIMARY KEY,
+    CUS_LNAME VARCHAR(50),
+    CUS_FNAME VARCHAR(50),
+    CUS_INITIAL CHAR(1),
+    CUS_AREACODE CHAR(3),
+    CUS_PHONE VARCHAR(15),
+    CUS_TYPE ENUM('Standard', 'Premium', 'Bulk'), -- tipo lista
+    CUS_ACTIVE BOOLEAN -- tipo si/no
+);
+
+CREATE TABLE INVOICE (
+    INV_NUMBER INT PRIMARY KEY,
+    CUS_CODE INT,
+    INV_DATE DATE,
+    INV_PAID BOOLEAN, -- tipo si/no
+    INV_TYPE ENUM('Digital', 'Physical'), -- tipo lista
+    UNIQUE (INV_NUMBER),
+    FOREIGN KEY (CUS_CODE) REFERENCES CUSTOMER(CUS_CODE)
+);
+
+CREATE TABLE PRODUCT (
+    PROD_CODE INT PRIMARY KEY,
+    PROD_DESCRIPT VARCHAR(100),
+    PROD_PRICE DECIMAL(10, 2),
+    PROD_ON_HAND INT,
+    VEND_CODE INT,
+    PROD_CATEGORY ENUM('Gadgets', 'Apparel', 'Furniture'), -- tipo lista
+    PROD_DISCONTINUED BOOLEAN -- tipo si/no
+);
+
+CREATE TABLE LINE (
+    INV_NUMBER INT,
+    LINE_NUMBER INT,
+    PROD_CODE INT,
+    LINE_UNITS INT,
+    LINE_PRICE DECIMAL(10, 2),
+    PRIMARY KEY (INV_NUMBER, LINE_NUMBER),
+    FOREIGN KEY (INV_NUMBER) REFERENCES INVOICE(INV_NUMBER),
+    FOREIGN KEY (PROD_CODE) REFERENCES PRODUCT(PROD_CODE)
+);
+
+INSERT INTO CUSTOMER (CUS_CODE, CUS_LNAME, CUS_FNAME, CUS_INITIAL, CUS_AREACODE, CUS_PHONE, CUS_TYPE, CUS_ACTIVE)
+VALUES
+(1, 'Anderson', 'Ethan', 'E', '6', '6123456', 'Standard', TRUE),
+(2, 'Taylor', 'Sophia', 'S', '6', '6234567', 'Premium', TRUE),
+(3, 'Wilson', 'Liam', 'L', '6', '6345678', 'Bulk', FALSE),
+(4, 'Johnson', 'Olivia', 'O', '6', '6456789', 'Standard', TRUE),
+(5, 'Martinez', 'James', 'J', '6', '6567890', 'Premium', TRUE),
+(6, 'Garcia', 'Ava', 'A', '6', '6678901', 'Standard', FALSE),
+(7, 'Robinson', 'Noah', 'N', '7', '7789012', 'Bulk', TRUE),
+(8, 'Lewis', 'Isabella', 'I', '7', '7890123', 'Standard', TRUE),
+(9, 'Hernandez', 'Lucas', 'L', '7', '7901234', 'Premium', TRUE),
+(10, 'Young', 'Mia', 'M', '7', '8012345', 'Standard', FALSE);
+
+INSERT INTO INVOICE (INV_NUMBER, CUS_CODE, INV_DATE, INV_PAID, INV_TYPE)
+VALUES
+(201, 1, '2024-02-01', TRUE, 'Digital'), 
+(202, 2, '2024-02-02', FALSE, 'Physical'), 
+(203, 3, '2024-02-03', TRUE, 'Digital'), 
+(204, 4, '2024-02-04', TRUE, 'Physical'), 
+(205, 5, '2024-02-05', FALSE, 'Digital'), 
+(206, 6, '2024-02-06', TRUE, 'Physical'), 
+(207, 7, '2024-02-07', TRUE, 'Digital'), 
+(208, 8, '2024-02-08', FALSE, 'Physical'), 
+(209, 9, '2024-02-09', TRUE, 'Digital'), 
+(210, 10, '2024-02-10', FALSE, 'Physical'); 
+
+INSERT INTO PRODUCT (PROD_CODE, PROD_DESCRIPT, PROD_PRICE, PROD_ON_HAND, VEND_CODE, PROD_CATEGORY, PROD_DISCONTINUED)
+VALUES
+(2001, 'Gaming Laptop', 1199.99, 40, 3001, 'Gadgets', FALSE),      
+(2002, 'High-End Smartphone', 899.99, 150, 3002, 'Gadgets', FALSE), 
+(2003, 'Cotton T-shirt', 24.99, 200, 3003, 'Apparel', FALSE),       
+(2004, 'Designer Jeans', 59.99, 80, 3003, 'Apparel', TRUE),         
+(2005, '4K UHD TV', 699.99, 25, 3001, 'Gadgets', FALSE),            
+(2006, 'Professional Blender', 49.99, 110, 3004, 'Furniture', FALSE), 
+(2007, 'Convection Microwave', 99.99, 70, 3004, 'Furniture', FALSE), 
+(2008, 'Stainless Steel Refrigerator', 1399.99, 15, 3004, 'Furniture', TRUE), 
+(2009, 'Winter Jacket', 109.99, 50, 3003, 'Apparel', FALSE),        
+(2010, '10-inch Tablet', 499.99, 60, 3002, 'Gadgets', FALSE);       
+
+INSERT INTO LINE (INV_NUMBER, LINE_NUMBER, PROD_CODE, LINE_UNITS, LINE_PRICE)
+VALUES
+(201, 1, 2001, 1, 1199.99),  
+(201, 2, 2002, 2, 899.99),    
+(202, 1, 2003, 3, 24.99),     
+(202, 2, 2004, 1, 59.99),     
+(203, 1, 2005, 1, 699.99),    
+(204, 1, 2006, 2, 49.99),     
+(205, 1, 2007, 1, 99.99),     
+(206, 1, 2008, 1, 1399.99),   
+(207, 1, 2009, 2, 109.99),    
+(208, 1, 2010, 1, 499.99);
