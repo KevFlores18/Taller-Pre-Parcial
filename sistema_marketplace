@@ -1,0 +1,103 @@
+CREATE DATABASE sistema_marketplace;
+USE sistema_marketplace;
+
+CREATE TABLE Categoria (
+    CATEGORIA_ID INT PRIMARY KEY AUTO_INCREMENT,
+    NOMBRE VARCHAR(100),
+    DESCRIPCION TEXT,
+    ACTIVO BOOLEAN -- Tipo si/no
+);
+
+CREATE TABLE Ubicacion (
+    UBICACION_ID INT PRIMARY KEY AUTO_INCREMENT,
+    NOMBRE VARCHAR(100),
+    DIRECCION VARCHAR(255),
+    TELEFONO VARCHAR(15)
+);
+
+CREATE TABLE Usuario (
+    USUARIO_ID INT PRIMARY KEY AUTO_INCREMENT,
+    NOMBRE VARCHAR(100),
+    EMAIL VARCHAR(100) UNIQUE,
+    TELEFONO VARCHAR(15),
+    CONTRASENA VARCHAR(255),
+    FECHA_REGISTRO DATE
+);
+
+CREATE TABLE Producto (
+    PRODUCTO_ID INT PRIMARY KEY AUTO_INCREMENT,
+    NOMBRE VARCHAR(100),
+    PRECIO DECIMAL(10, 2),
+    CATEGORIA_ID INT,
+    DESCRIPCION TEXT,
+    UBICACION_ID INT,
+    FECHA_CREACION DATE,
+    VENDEDOR_ID INT,
+    ACTIVO BOOLEAN, -- Tipo si/no
+    FOREIGN KEY (CATEGORIA_ID) REFERENCES Categoria(CATEGORIA_ID),
+    FOREIGN KEY (UBICACION_ID) REFERENCES Ubicacion(UBICACION_ID),
+    FOREIGN KEY (VENDEDOR_ID) REFERENCES Usuario(USUARIO_ID)
+);
+
+CREATE TABLE Venta (
+    VENTA_ID INT PRIMARY KEY AUTO_INCREMENT,
+    PRODUCTO_ID INT,
+    USUARIO_ID INT,
+    FECHA_VENTA DATE,
+    CANTIDAD INT,
+    PRECIO_TOTAL DECIMAL(10, 2),
+    FOREIGN KEY (PRODUCTO_ID) REFERENCES Producto(PRODUCTO_ID),
+    FOREIGN KEY (USUARIO_ID) REFERENCES Usuario(USUARIO_ID)
+);
+
+CREATE TABLE Trabajo (
+    TRABAJO_ID INT PRIMARY KEY AUTO_INCREMENT,
+    NOMBRE VARCHAR(100),
+    DESCRIPCION TEXT,
+    USUARIO_ID INT,
+    FECHA_PUBLICACION DATE,
+    ACTIVO BOOLEAN, -- Tipo si/no
+    FOREIGN KEY (USUARIO_ID) REFERENCES Usuario(USUARIO_ID)
+);
+
+INSERT INTO Categoria (NOMBRE, DESCRIPCION, ACTIVO) VALUES
+('Tecnología', 'Dispositivos y gadgets tecnológicos', TRUE),
+('Muebles', 'Muebles para el hogar y oficina', TRUE),
+('Ropa y Accesorios', 'Vestimenta y accesorios de moda', TRUE),
+('Juguetes Educativos', 'Juguetes que fomentan el aprendizaje', TRUE),
+('Alimentos y Bebidas', 'Productos comestibles y bebidas', TRUE);
+
+INSERT INTO Ubicacion (NOMBRE, DIRECCION, TELEFONO) VALUES
+('Sucursal Centro', 'Av. Central, Ciudad de Panamá', '67890123'),
+('Sucursal Este', 'Calle 12, Ciudad de Panamá', '78901234'),
+('Sucursal Oeste', 'Calle 20, Ciudad de Panamá', '89012345'),
+('Sucursal Norte', 'Calle 7, Ciudad de Panamá', '90123456'),
+('Sucursal Sur', 'Calle 5, Ciudad de Panamá', '12345678');
+
+INSERT INTO Usuario (NOMBRE, EMAIL, TELEFONO, CONTRASENA, FECHA_REGISTRO) VALUES
+('Carlos Mendoza', 'carlos.m@example.com', '66778899', 'contraseña123', '2024-01-01'),
+('Lucía Martínez', 'lucia.m@example.com', '99887766', 'contraseña456', '2024-01-02'),
+('Jorge Ramírez', 'jorge.r@example.com', '55443322', 'contraseña789', '2024-01-03'),
+('Ana Torres', 'ana.t@example.com', '11223344', 'contraseña101', '2024-01-04'),
+('Luis Hernández', 'luis.h@example.com', '22334455', 'contraseña202', '2024-01-05');
+
+INSERT INTO Producto (NOMBRE, PRECIO, CATEGORIA_ID, DESCRIPCION, UBICACION_ID, FECHA_CREACION, VENDEDOR_ID, ACTIVO) VALUES
+('Laptop Gamer', 1199.99, 1, 'Laptop de alto rendimiento para gamers', 1, '2024-01-01', 1, TRUE),
+('Sofá Esquinero', 699.99, 2, 'Sofá esquinero de diseño moderno', 2, '2024-01-02', 2, TRUE),
+('Chaqueta de Cuero', 129.99, 3, 'Chaqueta de cuero para hombre', 3, '2024-01-03', 3, TRUE),
+('Juego de Construcción', 39.99, 4, 'Juego de construcción para niños', 4, '2024-01-04', 4, TRUE),
+('Cereal Integral', 4.99, 5, 'Cereal saludable y delicioso', 5, '2024-01-05', 5, TRUE);
+
+INSERT INTO Venta (PRODUCTO_ID, USUARIO_ID, FECHA_VENTA, CANTIDAD, PRECIO_TOTAL) VALUES
+(1, 1, '2024-02-01', 1, 1199.99),
+(2, 2, '2024-02-02', 1, 699.99),
+(3, 3, '2024-02-03', 2, 259.98),
+(4, 4, '2024-02-04', 3, 119.97),
+(5, 5, '2024-02-05', 10, 49.90);
+
+INSERT INTO Trabajo (NOMBRE, DESCRIPCION, USUARIO_ID, FECHA_PUBLICACION, ACTIVO) VALUES
+('Programador', 'Desarrollar aplicaciones web y móviles', 1, '2024-01-15', TRUE),
+('Diseñador Industrial', 'Crear diseños innovadores de productos', 2, '2024-01-16', TRUE),
+('Asistente de Ventas', 'Atender a los clientes y ayudar en ventas', 3, '2024-01-17', TRUE),
+('Chef', 'Preparar platillos en un restaurante', 4, '2024-01-18', TRUE),
+('Repartidor', 'Entregar pedidos a domicilio', 5, '2024-01-19', TRUE);
